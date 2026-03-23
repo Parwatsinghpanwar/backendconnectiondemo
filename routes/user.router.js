@@ -4,5 +4,7 @@ import * as userController from "../Controller/user.controller.js";
 const router=express.Router();
 
 router.post("/save",userController.save);
-
+router.get("/fetch",userController.fetch);
+router.get("/fetchuser",userController.fetchuser);
+router.delete("/deleteuser",userController.deleteuser);
 export default router;
