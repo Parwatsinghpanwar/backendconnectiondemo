@@ -43,18 +43,30 @@ export const fetchuser=async (req,res,next)=>{
     else   res.status(404).json({"status":false,"message":"no data found"});
 
 }
-export const deleteuser=async (req,res,next)=>{
-    
-    var conditionobj=url.parse(req.url,true).query ;
-    var Userlist=await Userschemamodel.findOne(conditionobj);
-      
-    var user=await Userschemamodel.deleteOne(conditionobj);
-    if(user.length>0){
-        let result=await Userschemamodel.deleteone(conditionobj);
-        if(result) res.status(200).json({"status":true,"message":"user deleted successfully"});
-        else res.status(500).json({"status":false,"message":"user deletion failed"});
-        
-    }
-    else   res.status(404).json({"status":false,"message":"no data found"});
+ export const deleteuser = async (req, res, next) => {
+    try {
+        const conditionobj = req.query;
 
-}
+        const result = await Userschemamodel.deleteOne(conditionobj);
+
+        if (result.deletedCount > 0) {
+            res.status(200).json({
+                status: true,
+                message: "User deleted successfully"
+            });
+        } else {
+            res.status(404).json({
+                status: false,
+                message: "No data found"
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: false,
+            message: "Server error"
+        });
+    }
+};
+
