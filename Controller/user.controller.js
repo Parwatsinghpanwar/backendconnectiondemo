@@ -1,3 +1,4 @@
+import { json } from 'stream/consumers';
 import '../models/connection.js';
 import Userschemamodel from '../models/User.js';
 import url from "url";
@@ -68,5 +69,67 @@ export const fetchuser=async (req,res,next)=>{
             message: "Server error"
         });
     }
-};
 
+};
+// export const updateuser = async (req, res, next) => {
+//     try {
+//         const conditionobj = req.query;
+//         const updateData = req.body;
+
+//         const result = await Userschemamodel.updateOne(conditionobj, updateData);
+
+//         if (result.modifiedCount > 0) {
+//             res.status(200).json({
+//                 status: true,
+//                 message: "User updated successfully"
+//             });
+//         } else {
+//             res.status(404).json({
+//                 status: false,
+//                 message: "No data found"
+//             });
+//         }
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({
+//             status: false,
+//             message: "Server error"
+//         });
+//     }
+
+// }
+
+export const updateuser=async(req,res,next)=>{
+ var conditionobj=json.parse(req.body.conditionobj);
+ let userDetails=await Userschemamodel.findOne(conditionobj);
+ if(userDetails.length!=0)
+ {
+    let user=await  Userschemamodel.updateOne(conditionobj,{$set:json.parse(res.body.content_obj)});
+    if(user)
+    {
+        res.status(200).json({
+                status: true,
+                message: "User update successfully"})
+    }
+    else {
+            res.status(404).json({
+                status: false,
+                message: "No data found"
+            });
+
+    }}
+    
+        else {
+            res.status(404).json({
+                status: false,
+                message: "No recode found"
+            });
+    }
+
+}
+//for the login process to dependets jsonweb token (jwt) fist install depenedy 
+// npm install jsonwebtoken
+//npm install randomstring 
+// since methods to create a token since methods resive fist in unique velue is second is randomstring 
+//
