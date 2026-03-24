@@ -2,6 +2,9 @@ import { json } from 'stream/consumers';
 import '../models/connection.js';
 import Userschemamodel from '../models/User.js';
 import url from "url";
+import { error } from 'console';
+import jwt from "jsonwebtoken";
+import rs from "randomstring";
 
 
 
@@ -102,19 +105,19 @@ export const fetchuser=async (req,res,next)=>{
 
 export const updateuser=async(req,res,next)=>{
  var conditionobj=json.parse(req.body.conditionobj);
- let userDetails=await Userschemamodel.findOne(conditionobj);
+ let userDetails=await Userschemamodel.find(conditionobj);
  if(userDetails.length!=0)
  {
     let user=await  Userschemamodel.updateOne(conditionobj,{$set:json.parse(res.body.content_obj)});
     if(user)
     {
         res.status(200).json({
-                status: true,
+            
                 message: "User update successfully"})
     }
     else {
             res.status(404).json({
-                status: false,
+            
                 message: "No data found"
             });
 
@@ -132,4 +135,20 @@ export const updateuser=async(req,res,next)=>{
 // npm install jsonwebtoken
 //npm install randomstring 
 // since methods to create a token since methods resive fist in unique velue is second is randomstring 
-//
+//for securty in web appliction in token 
+export const login=async(req,res,next)=>{
+ var conditionobj={...req.body};
+ var userList=await Userschemamodel.find(conditionobj);
+ if(userList.length!=0)
+ {
+ var payload=userList[0].email;
+ var key=rs.generate();
+ var token=jwt.sign(payload,key);
+ res.status(200).json({"status":true,"token":token,"userdetails":userList[0]});
+ }
+ else
+ {
+    res.status(500).json({"status":false,"token":error})
+ }
+
+}

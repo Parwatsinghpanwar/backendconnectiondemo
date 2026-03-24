@@ -8,4 +8,5 @@ router.get("/fetch",userController.fetch);
 router.get("/fetchuser",userController.fetchuser);
 router.delete("/deleteuser",userController.deleteuser);
 router.patch("/updateuser",userController.updateuser)
+router.post("/login",userController.login)
 export default router;
